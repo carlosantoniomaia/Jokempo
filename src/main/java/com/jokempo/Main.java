@@ -1,18 +1,15 @@
 package com.jokempo;
 
-import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
 
-        String[] mao = { "pedra", "papel", "tesoura" };
-
         Scanner scanner = new Scanner(System.in);
-        Random random = new Random();
+        Cpu cpu = new Cpu();
 
         System.out.println("======JOKEMPO=======");
-        System.out.println("Escolha: pedra, papel, tesoura");
+        System.out.println("Escolha: pedra, papel, tesoura - pode digitar");
 
         String escolhaDoUsuario = scanner.nextLine().toLowerCase();
 
@@ -25,18 +22,17 @@ public class Main {
 
         }
 
-        String escolhaCpu = mao[random.nextInt(3)];
-        System.out.println("A escolha do computador é: " + escolhaCpu);
+        Jogada jogadaUsuario = Jogada.valueOf(escolhaDoUsuario.toUpperCase());
+        Jogada jogadaCpu = cpu.escolherJogada();
 
-        if (escolhaDoUsuario.equals(escolhaCpu)) {
+        System.out.println("A escolha do computador é: " + jogadaCpu.name().toLowerCase());
+
+        if (jogadaUsuario == jogadaCpu) {
             System.out.println("Empate!");
             scanner.close();
             return;
-        } else if (escolhaDoUsuario.equals("tesoura") && escolhaCpu.equals("papel")
-                || escolhaDoUsuario.equals("pedra") && escolhaCpu.equals("tesoura")
-                || escolhaDoUsuario.equals("papel") && escolhaCpu.equals("pedra")) {
+        } else if (jogadaUsuario.venceDe(jogadaCpu)) {
             System.out.println("Você ganhou!!");
-
         } else {
             System.out.println("Você perdeu!!");
         }
@@ -45,8 +41,13 @@ public class Main {
     }
 
     private static boolean escolhaValida(String escolhaDoUsuario) {
-        return escolhaDoUsuario.equals("pedra")
-                || escolhaDoUsuario.equals("papel")
-                || escolhaDoUsuario.equals("tesoura");
+        for (Jogada jogada : Jogada.values()) {
+            if (jogada.name().equalsIgnoreCase(escolhaDoUsuario)) {
+                return true;
+            }
+        }
+        return false;
+
     }
+
 }
